@@ -5,12 +5,20 @@ import (
 	"testing"
 )
 
-const TestAPIKey = "110894750:AAFY9JYP03mc4EtofS75ogX2vkJp-67ksFc"
+const (
+	TestAPIKey = "1234:???"
+	TestId     = 1234
+)
 
 func TestNew(t *testing.T) {
 	bot, err := tgbot.New(TestAPIKey)
 	if err != nil {
-		t.Error(err)
+		t.Errorf("Connect: %s", err)
 	}
-	bot.Name()
+	info := bot.Info()
+	t.Log(info)
+
+	if info.Id != TestId {
+		t.Errorf("Test id is wrong, is %d, should be %d", info.Id, TestId)
+	}
 }
