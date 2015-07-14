@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"time"
 )
 
@@ -104,4 +105,19 @@ func (b *Bot) connect() error {
 
 func (b *Bot) Info() TGUser {
 	return b.info
+}
+
+func (b *Bot) Send(chatId Integer, text string, disablePreview bool,
+	replyingToId *Integer) (TGMessage, error) {
+
+	str := fmt.Sprintf("sendMessage?chat_id=%d&text=%s", chatId, url.QueryEscape(text))
+	if disablePreview {
+		str += "&disable_web_page_preview=true"
+	}
+	if replyingToId != nil {
+		str += fmt.Sprintf("reply_to_message_id=%d", *replyingToId)
+	}
+	var msg TGMessage
+	err := b.Req(str, &msg)
+	return msg, err
 }
