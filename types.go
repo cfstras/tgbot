@@ -84,5 +84,5 @@ func (t TGMessage) String() string {
 }
 
 func (u TGUser) String() string {
-	return fmt.Sprintf("%s %s (%s)", u.FirstName, u.LastName, u.Username)
+	return fmt.Sprintf("%d %s %s (%s)", u.ID(), u.FirstName, u.LastName, u.Username)
 }

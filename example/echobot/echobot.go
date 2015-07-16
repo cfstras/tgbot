@@ -3,9 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/cfstras/tgbot"
 	"os"
 	"os/signal"
+
+	"github.com/cfstras/tgbot"
 )
 
 var apikey string

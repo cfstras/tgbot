@@ -10,26 +10,36 @@ import (
 )
 
 type Bot struct {
-	apiKey string
-	info   TGUser
-	client *http.Client
+	apiKey  string
+	BaseURL string
+	info    TGUser
+	client  *http.Client
+	debug   bool
 }
 
 const Timeout = 5
-const BaseURL = "https://api.telegram.org/bot"
+const DefaultBaseURL = "https://api.telegram.org/bot"
 
 func New(apiKey string) (*Bot, error) {
 	if len(apiKey) < 3 {
 		return nil, ErrorInvalidArgs
 	}
-	b := &Bot{apiKey: apiKey, client: &http.Client{Timeout: time.Second * Timeout}}
+
+	b := &Bot{apiKey: apiKey, client: &http.Client{Timeout: time.Second * Timeout},
+		BaseURL: DefaultBaseURL}
+
 	err := b.connect()
 	return b, err
 }
 
+func (b *Bot) Debug(enable bool) {
+	b.debug = enable
+}
+
 func (b *Bot) Req(method string, receiver interface{}) error {
-	url := BaseURL + b.apiKey + "/" + method
+	url := b.BaseURL + b.apiKey + "/" + method
 	httpRes, err := b.client.Get(url)
+
 	//TODO certificate pinning
 	if err != nil {
 		return err
@@ -39,8 +49,12 @@ func (b *Bot) Req(method string, receiver interface{}) error {
 	if err != nil {
 		return err
 	}
+
+	if b.debug {
+		fmt.Println("response", string(body))
+	}
 	if httpRes.StatusCode != 200 {
-		return fmt.Errorf("HTTP Error %d %s:\n%s", httpRes.StatusCode,
+		return fmt.Errorf("HTTP Error %s:\n%s",
 			httpRes.Status, string(body))
 	}
 
@@ -51,7 +65,7 @@ func (b *Bot) Req(method string, receiver interface{}) error {
 		return err
 	}
 	if !res.Ok {
-		return fmt.Errorf("API error: %s", res.Description)
+		return fmt.Errorf("Server error: %s", res.Description)
 	}
 	return json.Unmarshal(res.Result, receiver)
 }
