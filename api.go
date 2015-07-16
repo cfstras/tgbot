@@ -29,7 +29,6 @@ func New(apiKey string) (*Bot, error) {
 
 func (b *Bot) Req(method string, receiver interface{}) error {
 	url := BaseURL + b.apiKey + "/" + method
-	//fmt.Println("GET", url)
 	httpRes, err := b.client.Get(url)
 	//TODO certificate pinning
 	if err != nil {
@@ -40,11 +39,15 @@ func (b *Bot) Req(method string, receiver interface{}) error {
 	if err != nil {
 		return err
 	}
-	//fmt.Println(string(body))
+	if httpRes.StatusCode != 200 {
+		return fmt.Errorf("HTTP Error %d %s:\n%s", httpRes.StatusCode,
+			httpRes.Status, string(body))
+	}
 
 	var res TGResponse
 	err = json.Unmarshal(body, &res)
 	if err != nil {
+		fmt.Errorf("GET %s:\n%s", url, string(body))
 		return err
 	}
 	if !res.Ok {
@@ -107,10 +110,14 @@ func (b *Bot) Info() TGUser {
 	return b.info
 }
 
-func (b *Bot) Send(chatId Integer, text string, disablePreview bool,
+func (b *Bot) Send(chatId ID, text string) (TGMessage, error) {
+	return b.SendAdv(chatId, text, false, nil)
+}
+
+func (b *Bot) SendAdv(chatId ID, text string, disablePreview bool,
 	replyingToId *Integer) (TGMessage, error) {
 
-	str := fmt.Sprintf("sendMessage?chat_id=%d&text=%s", chatId, url.QueryEscape(text))
+	str := fmt.Sprintf("sendMessage?chat_id=%d&text=%s", chatId.ID(), url.QueryEscape(text))
 	if disablePreview {
 		str += "&disable_web_page_preview=true"
 	}

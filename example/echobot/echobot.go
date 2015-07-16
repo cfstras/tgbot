@@ -38,6 +38,10 @@ func main() {
 
 	for v := range incoming {
 		fmt.Println("New Message:", v)
+		_, err = bot.Send(v.From, v.String())
+		if err != nil {
+			fmt.Println("Error:", err)
+		}
 	}
 }
 

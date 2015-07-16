@@ -35,7 +35,7 @@ func TestEcho(t *testing.T) {
 		return false
 	})
 
-	msg, err := bot.Send(id, "TestBotMessageEcho", false, nil)
+	msg, err := bot.Send(id, "TestBotMessageEcho")
 	if err != nil {
 		t.Fatalf("Send: %s", err)
 	}

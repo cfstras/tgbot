@@ -7,6 +7,14 @@ import (
 
 type Integer int32
 
+type ID interface {
+	ID() Integer
+}
+
+func (i Integer) ID() Integer {
+	return i
+}
+
 type TGResponse struct {
 	Ok          bool
 	Description string `json:",omitempty"`
@@ -15,6 +23,10 @@ type TGResponse struct {
 
 type TGID struct {
 	Id Integer `json:"id"`
+}
+
+func (t TGID) ID() Integer {
+	return t.Id
 }
 
 type TGUser struct {
