@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"os/signal"
@@ -12,9 +11,8 @@ import (
 var apikey string
 
 func main() {
-	if !flags() {
-		return
-	}
+	apikey, _ = tgbot.GetTokenFromEnv()
+
 	fmt.Println("Starting echoBot on key", apikey)
 	bot, err := tgbot.New(apikey)
 	if err != nil {
@@ -44,14 +42,4 @@ func main() {
 			fmt.Println("Error:", err)
 		}
 	}
-}
-
-func flags() bool {
-	flag.Parse()
-	if flag.NArg() != 1 {
-		fmt.Println("Please provide an API key:\n    echobot <key>")
-		return false
-	}
-	apikey = flag.Arg(0)
-	return true
 }
