@@ -50,6 +50,11 @@ type TGUpdate struct {
 	UpdateId Integer   `json:"update_id"`
 	Message  TGMessage `json:"message,omitempty"`
 }
+type TGLocation struct {
+	Longitude float32 `json:"longitude"`
+	Latitude float32 `json:"latitude"`
+
+}
 
 type TGMessage struct {
 	MessageId      Integer         `json:"message_id"`       // Unique message identifier
@@ -66,7 +71,7 @@ type TGMessage struct {
 	//Sticker             *Sticker        `json:"asdf"` // Optional. Message is a sticker, information about the sticker
 	//Video               *Video          `json:"asdf"` // Optional. Message is a video, information about the video
 	//Contact             *Contact        `json:"asdf"` // Optional. Message is a shared contact, information about the contact
-	//Location            *Location       `json:"asdf"` // Optional. Message is a shared location, information about the location
+	Location            *TGLocation       `json:"location"` // Optional. Message is a shared location, information about the location
 	NewChatParticipant  *TGUser `json:"new_chat_participant"`  // Optional. A new member was added to the group, information about them (this member may be bot itself)
 	LeftChatParticipant *TGUser `json:"left_chat_participant"` // Optional. A member was removed from the group, information about them (this member may be bot itself)
 	NewChatTitle        *string `json:"new_chat_title"`        // Optional. A group title was changed to this value
